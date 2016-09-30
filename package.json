@@ -1,5 +1,5 @@
 {
-  "name": "react-app-starting-point",
+  "name": "react-starting-point",
   "version": "1.0.0",
   "description": "A minimalist starting point for React.js apps.",
   "main": "src/index.js",
@@ -7,19 +7,10 @@
     "build": "./node_modules/.bin/webpack -p",
     "dev": "./node_modules/.bin/webpack-dev-server --inline"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/magician11/speech-to-colours.git"
-  },
   "keywords": [
     "react"
   ],
   "author": "Andrew Golightly <support@andrewgolightly.com> (http://www.golightlyplus.com)",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/magician11/speech-to-colours/issues"
-  },
-  "homepage": "https://github.com/magician11/speech-to-colours#readme",
   "devDependencies": {
     "babel-core": "^6.16.0",
     "babel-loader": "^6.2.5",

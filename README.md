@@ -4,6 +4,11 @@ Simple and solid starting point for React.js apps.
 
 Uses: eslint, webpack, sass, es6
 
+## To start..
+
+- Get a copy of this boilerplate by typing `git clone https://github.com/magician11/react-starting-point.git [my-project]`
+- Then `cd [my-project]`
+
 ## To get this running..
 
 - Install the packages by typing `npm install`

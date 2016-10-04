@@ -9,6 +9,7 @@ class SpeechToTextDemo extends Component {
     this.state = {
       error: '',
       interimText: '',
+      finalisedText: '',
     };
 
     this.initListener = this.initListener.bind(this);
@@ -28,20 +29,32 @@ class SpeechToTextDemo extends Component {
   }
 
   render() {
-    const { error, interimText } = this.state;
+    const { error, interimText, finalisedText } = this.state;
 
     let content;
     if (error) {
-      content = { error };
+      content = <h1>{ error }</h1>;
+    } else if (finalisedText) {
+      content = (
+        <div>
+          <h1>Status: finished listening</h1>
+          <p>You said: {finalisedText}</p>
+        </div>
+      );
     } else if (interimText === '') {
-      content = 'Say anything you like :)';
+      content = <h1>Say anything you like :)</h1>;
     } else {
-      content = this.state.interimText;
+      content = (
+        <div>
+          <h1>Status: I'm listening...</h1>
+          <p>{interimText}</p>
+        </div>
+      );
     }
 
     return (
       <div className={styling['speech-to-text-demo']}>
-        <h1>{content}</h1>
+        {content}
       </div>
     );
   }

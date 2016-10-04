@@ -8,15 +8,17 @@ class SpeechToTextDemo extends Component {
     super(props);
     this.state = {
       error: '',
+      interimText: '',
     };
 
     this.initListener = this.initListener.bind(this);
     this.initListener();
+    this.listener.startListening();
   }
 
   initListener() {
-    const onAnythingSaid = text => console.log(`Interim text: ${text}`);
-    const onFinalised = text => console.log(`Finalised text: ${text}`);
+    const onAnythingSaid = text => this.setState({ interimText: text });
+    const onFinalised = text => this.setState({ finalisedText: text });
 
     try {
       this.listener = new SpeechToText(onAnythingSaid, onFinalised);
@@ -26,18 +28,20 @@ class SpeechToTextDemo extends Component {
   }
 
   render() {
-    const { error } = this.state;
+    const { error, interimText } = this.state;
 
     let content;
     if (error) {
-      content = <h1>{error}</h1>;
+      content = { error };
+    } else if (interimText === '') {
+      content = 'Say anything you like :)';
     } else {
-      content = <h1>Looking good!</h1>;
+      content = this.state.interimText;
     }
 
     return (
       <div className={styling['speech-to-text-demo']}>
-        {content}
+        <h1>{content}</h1>
       </div>
     );
   }

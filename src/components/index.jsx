@@ -11,18 +11,15 @@ class SpeechToTextDemo extends Component {
       interimText: '',
       finalisedText: '',
     };
-
-    this.initListener = this.initListener.bind(this);
-    this.initListener();
-    this.listener.startListening();
   }
 
-  initListener() {
+  componentWillMount() {
     const onAnythingSaid = text => this.setState({ interimText: text });
     const onFinalised = text => this.setState({ finalisedText: text });
 
     try {
       this.listener = new SpeechToText(onAnythingSaid, onFinalised);
+      this.listener.startListening();
     } catch (error) {
       this.setState({ error: error.message });
     }

@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import YourComponent from './components/your-component';
+import SpeechToTextDemo from './components/speech-to-text-demo';
 
 // remove margins
 document.body.style.margin = 0;
 
-ReactDOM.render(<YourComponent />, document.getElementById('app'));
+ReactDOM.render(<SpeechToTextDemo />, document.getElementById('app'));

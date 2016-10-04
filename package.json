@@ -31,6 +31,7 @@
   "dependencies": {
     "html-webpack-plugin": "^2.22.0",
     "react": "^15.3.2",
-    "react-dom": "^15.3.2"
+    "react-dom": "^15.3.2",
+    "speech-to-text": "^0.3.6"
   }
 }

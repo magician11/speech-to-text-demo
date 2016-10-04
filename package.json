@@ -1,7 +1,7 @@
 {
-  "name": "react-starting-point",
+  "name": "speech-to-text-demo",
   "version": "1.0.0",
-  "description": "A minimalist starting point for React.js apps.",
+  "description": "A speech to text demo.",
   "main": "src/index.js",
   "scripts": {
     "build": "./node_modules/.bin/webpack -p",

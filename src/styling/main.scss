@@ -6,9 +6,11 @@
     font-family: Arial;
     background-color: $black;
     height: 100vh;
-    display: flex;
-    justify-content: center;
-    padding-top: 11%;
     color: $white;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 }

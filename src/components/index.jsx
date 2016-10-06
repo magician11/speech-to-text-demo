@@ -9,49 +9,50 @@ class SpeechToTextDemo extends Component {
     this.state = {
       error: '',
       interimText: '',
-      finalisedText: '',
+      finalisedText: [],
+      listening: false,
     };
   }
 
   componentWillMount() {
-    const onAnythingSaid = text => this.setState({ interimText: text });
-    const onFinalised = text => this.setState({ finalisedText: text });
+    const onAnythingSaid = (text) => {
+      this.setState({ interimText: text });
+    };
+
+    const onFinalised = (text) => {
+      this.setState({ finalisedText: this.state.finalisedText.concat(text) });
+    };
+
+    const onFinishedListening = () => {
+      this.setState({ listening: false });
+    };
 
     try {
-      this.listener = new SpeechToText(onAnythingSaid, onFinalised);
+      this.listener = new SpeechToText(onAnythingSaid, onFinalised, onFinishedListening);
       this.listener.startListening();
+      this.setState({ listening: true });
     } catch (error) {
       this.setState({ error: error.message });
     }
   }
 
   render() {
-    const { error, interimText, finalisedText } = this.state;
+    const { error, interimText, finalisedText, listening } = this.state;
 
-    let content;
+    let title;
     if (error) {
-      content = <h1>{ error }</h1>;
-    } else if (finalisedText) {
-      content = (
-        <div>
-          <h1>Status: finished listening</h1>
-          <p>You said: {finalisedText}</p>
-        </div>
-      );
-    } else if (interimText === '') {
-      content = <h1>Say anything you like :)</h1>;
+      title = error;
     } else {
-      content = (
-        <div>
-          <h1>Status: I'm listening...</h1>
-          <p>{interimText}</p>
-        </div>
-      );
+      title = listening ? 'Listening...' : 'Finished listening';
     }
 
     return (
       <div className={styling['speech-to-text-demo']}>
-        {content}
+        <h1>{title}</h1>
+        <h2>Current utterances</h2>
+        <p>{interimText}</p>
+        <h2>Finalised text</h2>
+        <ul>{finalisedText.map((str, index) => <li key={index}>{str}</li>)}</ul>
       </div>
     );
   }

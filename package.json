@@ -13,12 +13,14 @@
   ],
   "author": "Andrew Golightly <support@andrewgolightly.com> (http://www.golightlyplus.com)",
   "devDependencies": {
-    "eslint": "^4.11.0",
+    "eslint": "^4.12.1",
     "react-scripts": "^1.0.17"
   },
   "dependencies": {
-    "react": "^16.1.1",
-    "react-dom": "^16.1.1",
-    "speech-to-text": "^0.4.4"
+    "material-ui": "^1.0.0-beta.22",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "speech-to-text": "^0.7.4",
+    "typeface-roboto": "^0.0.45"
   }
 }

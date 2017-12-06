@@ -4,11 +4,18 @@ import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
+import AppBar from 'material-ui/AppBar';
+import Toolbar from 'material-ui/Toolbar';
 import SpeechToText from 'speech-to-text';
 
 const styles = theme => ({
   root: {
-    paddingTop: 65
+    paddingTop: 65,
+    paddingLeft: 11,
+    paddingRight: 11
+  },
+  flex: {
+    flex: 1
   },
   paper: theme.mixins.gutters({
     paddingTop: 22,
@@ -125,22 +132,41 @@ class SpeechToTextDemo extends Component {
     }
 
     return (
-      <Grid container justify="center" className={this.props.classes.root}>
-        <Grid item xs={8}>
-          <Grid container>
-            <Grid item xs={12}>
-              <Typography type="display3" gutterBottom>
-                Speech To Text Demo
-              </Typography>
-              <Typography type="subheading" gutterBottom>
-                This is a demo for the{' '}
-                <a href="https://www.npmjs.com/package/speech-to-text">
-                  speech-to-text module on npm
-                </a>.
-              </Typography>
+      <Grid container>
+        <AppBar position="static" color="default">
+          <Toolbar>
+            <Typography type="title" className={this.props.classes.flex}>
+              Speech To Text Demo
+            </Typography>
+            <Button
+              raised
+              dense
+              href="https://github.com/magician11/speech-to-text-demo"
+            >
+              Source on GitHub
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <Grid container justify="center" className={this.props.classes.root}>
+          <Grid item xs={12} sm={8}>
+            <Grid container>
+              <Grid item xs={12}>
+                {/* <Typography type="display3" gutterBottom>
+                  Speech To Text Demo
+                </Typography> */}
+                <Typography type="subheading" gutterBottom>
+                  This is a demo for the{' '}
+                  <a href="https://www.npmjs.com/package/speech-to-text">
+                    speech-to-text module on npm
+                  </a>.
+                </Typography>
+                <Typography type="subheading" gutterBottom>
+                  Just start speaking...
+                </Typography>
+              </Grid>
             </Grid>
+            {content}
           </Grid>
-          {content}
         </Grid>
       </Grid>
     );

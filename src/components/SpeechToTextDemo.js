@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
-import Paper from 'material-ui/Paper';
-import Typography from 'material-ui/Typography';
-import { withStyles } from 'material-ui/styles';
-import Grid from 'material-ui/Grid';
-import Button from 'material-ui/Button';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
+import { withStyles } from '@material-ui/core/styles';
+import {
+  Paper,
+  Button,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Grid,
+  AppBar,
+  Toolbar
+} from '@material-ui/core';
 import SpeechToText from 'speech-to-text';
 
 const styles = theme => ({
@@ -17,6 +24,9 @@ const styles = theme => ({
   flex: {
     flex: 1
   },
+  grow: {
+    flexGrow: 1
+  },
   paper: theme.mixins.gutters({
     paddingTop: 22,
     paddingBottom: 22
@@ -24,57 +34,62 @@ const styles = theme => ({
 });
 
 class SpeechToTextDemo extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      error: '',
-      interimText: '',
-      finalisedText: [],
-      listening: false
-    };
-  }
+  state = {
+    error: '',
+    interimText: '',
+    finalisedText: [],
+    listening: false
+  };
 
   componentDidMount() {
     const onAnythingSaid = text => {
-      console.log('heard text', text);
       this.setState({ interimText: text });
     };
 
-    const onFinalised = text => {
-      console.log('finalised text', text);
-      this.setState({ finalisedText: this.state.finalisedText.concat(text) });
+    const onEndEvent = () => {
+      if (this.state.listening) {
+        this.startListening();
+      }
     };
 
-    const onFinishedListening = () => {
-      console.log('finished listening..');
-      this.setState({ listening: false });
+    const onFinalised = text => {
+      this.setState({
+        finalisedText: [text, ...this.state.finalisedText],
+        interimText: ''
+      });
     };
 
     try {
-      this.listener = new SpeechToText(
-        onAnythingSaid,
-        onFinalised,
-        onFinishedListening
-      );
-      this.startListening();
+      this.listener = new SpeechToText(onFinalised, onEndEvent, onAnythingSaid);
     } catch (error) {
       this.setState({ error: error.message });
     }
   }
 
   startListening = () => {
-    this.listener.startListening();
-    this.setState({ listening: true });
+    try {
+      this.listener.startListening();
+      this.setState({ listening: true });
+    } catch (err) {
+      console.log('yoyoy');
+      console.log(err);
+    }
+  };
+
+  stopListening = () => {
+    this.listener.stopListening();
+    this.setState({ listening: false });
   };
 
   render() {
     const { error, interimText, finalisedText, listening } = this.state;
+    const { classes } = this.props;
 
     let content;
     if (error) {
       content = (
-        <Paper className={this.props.classes.paper}>
-          <Typography type="headline" gutterBottom>
+        <Paper className={classes.paper}>
+          <Typography variant="h6" gutterBottom>
             {error}
           </Typography>
         </Paper>
@@ -84,26 +99,26 @@ class SpeechToTextDemo extends Component {
 
       if (listening) {
         buttonForListening = (
-          <Button
-            raised
-            color="primary"
-            onClick={() => this.listener.stopListening()}
-          >
+          <Button color="primary" onClick={() => this.stopListening()}>
             Stop Listening
           </Button>
         );
       } else {
         buttonForListening = (
-          <Button raised color="primary" onClick={() => this.startListening()}>
+          <Button
+            color="primary"
+            onClick={() => this.startListening()}
+            variant="contained"
+          >
             Start Listening
           </Button>
         );
       }
       content = (
-        <Grid container>
+        <Grid container spacing={16}>
           <Grid item xs={12} sm={5}>
             <Paper className={this.props.classes.paper}>
-              <Typography type="headline" gutterBottom>
+              <Typography variant="overline" gutterBottom>
                 Status: {listening ? 'listening...' : 'finished listening'}
               </Typography>
               {buttonForListening}
@@ -111,20 +126,34 @@ class SpeechToTextDemo extends Component {
           </Grid>
           <Grid item xs={12} sm={7}>
             <Paper className={this.props.classes.paper}>
-              <Typography type="headline" gutterBottom>
+              <Typography variant="overline" gutterBottom>
                 Current utterances
               </Typography>
-              <Typography gutterBottom>{interimText}</Typography>
-              <Typography type="headline" gutterBottom>
-                Finalised text
+              <Typography variant="body1" gutterBottom>
+                {interimText}
               </Typography>
-              <Typography gutterBottom>
-                <ul>
-                  {finalisedText.map((str, index) => (
-                    <li key={index}>{str}</li>
-                  ))}
-                </ul>
-              </Typography>
+            </Paper>
+          </Grid>
+          <Grid xs={12}>
+            <Paper className={classes.paper}>
+              <Table className={classes.table}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Finalised Text</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {finalisedText.map((str, index) => {
+                    return (
+                      <TableRow key={index}>
+                        <TableCell component="th" scope="row">
+                          {str}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
             </Paper>
           </Grid>
         </Grid>
@@ -133,35 +162,29 @@ class SpeechToTextDemo extends Component {
 
     return (
       <Grid container>
-        <AppBar position="static" color="default">
+        <AppBar position="static">
           <Toolbar>
-            <Typography type="title" className={this.props.classes.flex}>
+            <Typography variant="h6" className={classes.grow} color="inherit">
               Speech To Text Demo
             </Typography>
             <Button
-              raised
-              dense
+              color="inherit"
               href="https://github.com/magician11/speech-to-text-demo"
             >
               Source on GitHub
             </Button>
           </Toolbar>
         </AppBar>
-        <Grid container justify="center" className={this.props.classes.root}>
+        <Grid container justify="center" className={classes.root}>
           <Grid item xs={12} sm={8}>
             <Grid container>
               <Grid item xs={12}>
-                {/* <Typography type="display3" gutterBottom>
-                  Speech To Text Demo
-                </Typography> */}
-                <Typography type="subheading" gutterBottom>
+                <Typography variant="subtitle1" gutterBottom>
                   This is a demo for the{' '}
                   <a href="https://www.npmjs.com/package/speech-to-text">
                     speech-to-text module on npm
-                  </a>.
-                </Typography>
-                <Typography type="subheading" gutterBottom>
-                  Just start speaking...
+                  </a>
+                  .
                 </Typography>
               </Grid>
             </Grid>

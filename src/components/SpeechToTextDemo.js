@@ -11,9 +11,16 @@ import {
   TableRow,
   Grid,
   AppBar,
-  Toolbar
+  Toolbar,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormHelperText
 } from '@material-ui/core';
 import SpeechToText from 'speech-to-text';
+
+import supportedLanguages from '../supportedLanguages';
 
 const styles = theme => ({
   root: {
@@ -38,36 +45,35 @@ class SpeechToTextDemo extends Component {
     error: '',
     interimText: '',
     finalisedText: [],
-    listening: false
+    listening: false,
+    language: 'en-US'
   };
-
-  componentDidMount() {
-    const onAnythingSaid = text => {
-      this.setState({ interimText: text });
-    };
-
-    const onEndEvent = () => {
-      if (this.state.listening) {
-        this.startListening();
-      }
-    };
-
-    const onFinalised = text => {
-      this.setState({
-        finalisedText: [text, ...this.state.finalisedText],
-        interimText: ''
-      });
-    };
-
-    try {
-      this.listener = new SpeechToText(onFinalised, onEndEvent, onAnythingSaid);
-    } catch (error) {
-      this.setState({ error: error.message });
-    }
-  }
 
   startListening = () => {
     try {
+      const onAnythingSaid = text => {
+        this.setState({ interimText: text });
+      };
+
+      const onEndEvent = () => {
+        if (this.state.listening) {
+          this.startListening();
+        }
+      };
+
+      const onFinalised = text => {
+        this.setState({
+          finalisedText: [text, ...this.state.finalisedText],
+          interimText: ''
+        });
+      };
+
+      this.listener = new SpeechToText(
+        onFinalised,
+        onEndEvent,
+        onAnythingSaid,
+        this.state.language
+      );
       this.listener.startListening();
       this.setState({ listening: true });
     } catch (err) {
@@ -82,9 +88,14 @@ class SpeechToTextDemo extends Component {
   };
 
   render() {
-    const { error, interimText, finalisedText, listening } = this.state;
+    const {
+      error,
+      interimText,
+      finalisedText,
+      listening,
+      language
+    } = this.state;
     const { classes } = this.props;
-
     let content;
     if (error) {
       content = (
@@ -116,15 +127,40 @@ class SpeechToTextDemo extends Component {
       }
       content = (
         <Grid container spacing={16}>
-          <Grid item xs={12} sm={5}>
+          <Grid item xs={12} md={7}>
             <Paper className={this.props.classes.paper}>
-              <Typography variant="overline" gutterBottom>
-                Status: {listening ? 'listening...' : 'finished listening'}
-              </Typography>
-              {buttonForListening}
+              <Grid container spacing={16}>
+                <Grid item xs={12} lg={6}>
+                  <Typography variant="overline" gutterBottom>
+                    Status: {listening ? 'listening...' : 'finished listening'}
+                  </Typography>
+                  {buttonForListening}
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel>Language</InputLabel>
+                    <Select
+                      value={language}
+                      onChange={evt =>
+                        this.setState({ language: evt.target.value })
+                      }
+                      disabled={listening}
+                    >
+                      {supportedLanguages.map(language => (
+                        <MenuItem key={language[1]} value={language[1]}>
+                          {language[0]}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <FormHelperText>
+                      What language are you going to speak in?
+                    </FormHelperText>
+                  </FormControl>
+                </Grid>
+              </Grid>
             </Paper>
           </Grid>
-          <Grid item xs={12} sm={7}>
+          <Grid item xs={12} md={5}>
             <Paper className={this.props.classes.paper}>
               <Typography variant="overline" gutterBottom>
                 Current utterances
@@ -134,7 +170,7 @@ class SpeechToTextDemo extends Component {
               </Typography>
             </Paper>
           </Grid>
-          <Grid xs={12}>
+          <Grid item xs={12}>
             <Paper className={classes.paper}>
               <Table className={classes.table}>
                 <TableHead>

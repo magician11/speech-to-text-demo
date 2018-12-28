@@ -18,6 +18,7 @@ import {
   MenuItem,
   FormHelperText
 } from '@material-ui/core';
+import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
 import SpeechToText from 'speech-to-text';
 
 import supportedLanguages from '../supportedLanguages';
@@ -49,29 +50,31 @@ class SpeechToTextDemo extends Component {
     language: 'en-US'
   };
 
+  onAnythingSaid = text => {
+    this.setState({ interimText: text });
+  };
+
+  onEndEvent = () => {
+    if (!isWidthUp('sm', this.props.width)) {
+      this.setState({ listening: false });
+    } else if (this.state.listening) {
+      this.startListening();
+    }
+  };
+
+  onFinalised = text => {
+    this.setState({
+      finalisedText: [text, ...this.state.finalisedText],
+      interimText: ''
+    });
+  };
+
   startListening = () => {
     try {
-      const onAnythingSaid = text => {
-        this.setState({ interimText: text });
-      };
-
-      const onEndEvent = () => {
-        if (this.state.listening) {
-          this.startListening();
-        }
-      };
-
-      const onFinalised = text => {
-        this.setState({
-          finalisedText: [text, ...this.state.finalisedText],
-          interimText: ''
-        });
-      };
-
       this.listener = new SpeechToText(
-        onFinalised,
-        onEndEvent,
-        onAnythingSaid,
+        this.onFinalised,
+        this.onEndEvent,
+        this.onAnythingSaid,
         this.state.language
       );
       this.listener.startListening();
@@ -232,4 +235,4 @@ class SpeechToTextDemo extends Component {
   }
 }
 
-export default withStyles(styles)(SpeechToTextDemo);
+export default withWidth()(withStyles(styles)(SpeechToTextDemo));

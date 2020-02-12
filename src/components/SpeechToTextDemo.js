@@ -129,10 +129,10 @@ class SpeechToTextDemo extends Component {
         );
       }
       content = (
-        <Grid container spacing={16}>
+        <Grid container spacing={8}>
           <Grid item xs={12} md={7}>
             <Paper className={this.props.classes.paper}>
-              <Grid container spacing={16}>
+              <Grid container spacing={8}>
                 <Grid item xs={12} lg={6}>
                   <Typography variant="overline" gutterBottom>
                     Status: {listening ? 'listening...' : 'finished listening'}
